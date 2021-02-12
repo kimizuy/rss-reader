@@ -9,3 +9,52 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+
+model Feed {
+  id String @id
+  name String
+  url String @unique
+  author User? @relation("FeedAuthor", fields: [authorId])
+  authorId String?
+  savedArticles SavedArticle[]
+  tags FeedTag[]
+  likes User[] @relation("FeedUserLikes")
+}
+
+model Bundle {
+  id String @id
+  name String
+  description String
+  author User? @relation("BundleAuthor", fields: [authorId])
+  authorId String?
+  tags BundleTag[] 
+  likes User[] @relation("BundleUserLikes")
+}
+
+model User {
+  id String @id
+  auth0 String @unique
+  nickname String?
+  picture String?
+  feeds Feed[] @relation("FeedAuthor")
+  bundles Bundle[] @relation("BundleAuthor")
+  feedLikes Feed[] @relation("FeedUserLikes")
+  bundleLikes Bundle[] @relation("BundleUserLikes")
+  savedArticles SavedArticle[]
+}
+
+model SavedArticle {
+  id String @id
+  content Json
+}
+
+model BundleTag {
+  id String @id
+  name String @unique
+}
+
+model FeedTag {
+  id String @id
+  name String @unique
+}
+
